@@ -10,6 +10,7 @@ public class Coordinate {
     private Integer id;
     private Double lat;
     private Double lng;
+    private Integer idLinha;
     @ManyToOne
     private Linha linha;
 
@@ -43,5 +44,13 @@ public class Coordinate {
 
     public void setLinha(Linha linha) {
         this.linha = linha;
+    }
+
+    public Integer getIdLinha() {
+        return idLinha;
+    }
+
+    public void setIdLinha(Integer idLinha) {
+        this.idLinha = idLinha;
     }
 }

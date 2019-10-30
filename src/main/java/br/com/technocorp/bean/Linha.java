@@ -1,5 +1,7 @@
 package br.com.technocorp.bean;
 
+import com.thoughtworks.xstream.XStream;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
@@ -54,5 +56,9 @@ public class Linha implements Serializable {
 
     public void setListCoordinate(List<Coordinate> listCoordinate) {
         this.listCoordinate = listCoordinate;
+    }
+    public String toXML() {
+        // TODO Auto-generated method stub
+        return new XStream().toXML(this);
     }
 }
