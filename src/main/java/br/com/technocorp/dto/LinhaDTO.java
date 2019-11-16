@@ -1,24 +1,15 @@
-package br.com.technocorp.bean;
+package br.com.technocorp.dto;
 
-import com.thoughtworks.xstream.XStream;
-
-import javax.persistence.*;
-import java.io.Serializable;
 import java.util.List;
 
-@Entity
-public class Linha implements Serializable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class LinhaDTO {
 
-    private Integer id;
     private Integer idLinha;
-
+    private Integer id;
     private String codigo;
     private String nome;
 
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "linha")
-    private List<Coordinate> listCoordinate;
+    private List<CoordinateDTO> listCoordinate;
 
     public Integer getIdLinha() {
         return idLinha;
@@ -52,15 +43,11 @@ public class Linha implements Serializable {
         this.nome = nome;
     }
 
-    public List<Coordinate> getListCoordinate() {
+    public List<CoordinateDTO> getListCoordinate() {
         return listCoordinate;
     }
 
-    public void setListCoordinate(List<Coordinate> listCoordinate) {
+    public void setListCoordinate(List<CoordinateDTO> listCoordinate) {
         this.listCoordinate = listCoordinate;
-    }
-    public String toXML() {
-        // TODO Auto-generated method stub
-        return new XStream().toXML(this);
     }
 }

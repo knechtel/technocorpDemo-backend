@@ -1,16 +1,14 @@
 package br.com.technocorp.controller;
 
-import br.com.technocorp.bean.*;
-
-import br.com.technocorp.dao.CoordinateDAO;
-import br.com.technocorp.dao.LinhaDAO;
+import br.com.technocorp.bean.CoordinateJson;
+import br.com.technocorp.dto.IntinerarioDTO;
+import br.com.technocorp.form.IntinerarioCoordinateForm;
+import br.com.technocorp.form.IntinerarioForm;
 import br.com.technocorp.service.IntinerarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/coordinate")
@@ -36,12 +34,26 @@ public class CoordinateController {
 //    }
 
 
-    @RequestMapping(value="list", method= RequestMethod.POST,consumes="application/json",produces="application/json")
+    @RequestMapping(value = "list", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     @ResponseBody
     public CoordinateJson list(@RequestBody IntinerarioCoordinateForm form) {
+        CoordinateJson cj = intinerarioService.findAllWeb(form.getCodigo());
+        return cj;
+    }
 
-         CoordinateJson list= intinerarioService.findAllWeb(form.getCodigo());
-        // TODO: call persistence layer to update
-        return list;
+    @RequestMapping(value = "create", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+    @ResponseBody
+    public ResponseEntity create(@RequestBody IntinerarioForm intinerarioDTO) {
+        intinerarioService.create(intinerarioDTO);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "delete", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+    @ResponseBody
+    public ResponseEntity delete(@RequestBody IntinerarioForm intinerarioDTO) {
+
+
+        intinerarioService.delete(intinerarioDTO);
+        return new ResponseEntity(HttpStatus.OK);
     }
 }

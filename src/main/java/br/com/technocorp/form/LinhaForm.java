@@ -1,6 +1,8 @@
-package br.com.technocorp.bean;
+package br.com.technocorp.form;
 
-public class IntinerarioForm {
+import br.com.technocorp.bean.Linha;
+
+public class LinhaForm {
 
     private Integer id;
     private String codigo;

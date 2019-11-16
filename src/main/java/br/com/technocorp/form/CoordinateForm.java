@@ -1,4 +1,6 @@
-package br.com.technocorp.bean;
+package br.com.technocorp.form;
+
+import br.com.technocorp.bean.Coordinate;
 
 public class CoordinateForm {
 

@@ -1,12 +1,14 @@
 package br.com.technocorp.service;
 
-import br.com.technocorp.bean.Coordinate;
 import br.com.technocorp.bean.CoordinateJson;
-import br.com.technocorp.bean.IntinerarioWrapper;
+import br.com.technocorp.bean.Coordinate;
+import br.com.technocorp.dto.CoordinateDTO;
+import br.com.technocorp.dto.IntinerarioDTO;
 import br.com.technocorp.bean.Linha;
 import br.com.technocorp.dao.CoordinateDAO;
 import br.com.technocorp.dao.LinhaDAO;
-import com.google.gson.Gson;
+import br.com.technocorp.form.CoordinateForm;
+import br.com.technocorp.form.IntinerarioForm;
 import com.google.gson.JsonElement;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
@@ -35,92 +37,41 @@ public class IntinerarioService {
     private CoordinateDAO coordinateDAO;
 
     public CoordinateJson findAllWeb(String codigo) {
-        List<CoordinateJson> listCoordinate = new ArrayList<CoordinateJson>();
-        ResteasyClient client = new ResteasyClientBuilder().build();
-        ResteasyWebTarget target = client.target("http://www.poatransporte.com.br/php/facades/process.php?a=il&p=" + codigo);
-        Response response = target.request().get();
-
-        String responseAsString = response.readEntity(String.class);
+        //response.close();
+        return null;
+    }
 
 
+    public void create(IntinerarioForm intinerarioForm) {
+        Linha linha = new Linha();
+        linha.setNome(intinerarioForm.getNome());
+        linha.setCodigo(intinerarioForm.getCodigo());
+        linha = linhaDAO.save(linha);
+        List<CoordinateForm> listCoordinate = intinerarioForm.getListCoordinate();
 
-        try {
-            FileWriter writer = new FileWriter(System.getProperty("user.dir") + "/coordinate.json");
-            writer.write(responseAsString);
-            writer.flush();
-
-        } catch (IOException e) {
-            e.printStackTrace();
+        for (CoordinateForm c : listCoordinate
+        ) {
+            Coordinate coordinate = c.build();
+            coordinate.setLinha(linha);
+            coordinateDAO.save(coordinate);
         }
-        CoordinateJson coordinate = new CoordinateJson();
-        coordinate.setCodigo(codigo);
+    }
 
-        Linha linhaIntinerario = linhaDAO.findByIDW(new Integer(codigo));
+    public void delete(IntinerarioForm intinerarioForm) {
 
-        try (Reader reader = new FileReader(System.getProperty("user.dir") + "/coordinate.json")) {
+        List<Coordinate> list = coordinateDAO.findByIDW(intinerarioForm.getIdLinha());
 
-
-            JSONParser jsonParser = new JSONParser();
-            JSONObject obj = (JSONObject) jsonParser.parse(reader);
-            Set<Map.Entry<String, JsonElement>> set = obj.entrySet();
-            int cnt = 0;
-            for (Object je : set) {
-
-                Map.Entry<String, JSONObject> hashMap = (Map.Entry<String, JSONObject>) je;
-
-                String linha = null;
-                try {
-                    linha = hashMap.getValue().toJSONString();
-
-                } catch (ClassCastException e) {
-
-                }
-                if (linha != null) {
-                    String strAux[] = linha.split("\"");
-
-                    Coordinate c = new Coordinate();
-                    c.setLat(new Double(strAux[7]));
-                    c.setLng(new Double(strAux[3]));
-
-                    if (coordinateDAO.findLat(c.getLat(), c.getLng()) == null) {
-                        coordinate.setCodigo(linhaIntinerario.getCodigo());
-                        c.setLinha(linhaIntinerario);
-                        c.setIdLinha(new Integer(codigo));
-
-                        if (coordinate.getListCoordinate() == null) {
-                            List<Coordinate> listC = new ArrayList<Coordinate>();
-                            coordinate.setListCoordinate(listC);
-                            coordinate.getListCoordinate().add(c);
-                        } else {
-                            coordinate.getListCoordinate().add(c);
-                        }
-                        coordinateDAO.save(c);
-                    } else {
-                        for (Coordinate coor : coordinateDAO.findAll()
-                        ) {
-                            if (coordinate.getListCoordinate() == null) {
-                                List<Coordinate> list = new ArrayList<Coordinate>();
-                                list.add(coor);
-                                coordinate.setListCoordinate(list);
-                            } else {
-                                coordinate.getListCoordinate().add(coor);
-                            }
-                        }
-
-                    }
-
-                }
-
+        if (list != null) {
+            for (Coordinate c : list) {
+                coordinateDAO.delete(c);
             }
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
         }
-        response.close();
-        return coordinate;
+
+        Linha linha = linhaDAO.findById(intinerarioForm.getIdMysql()).orElse(null);
+        if (linha != null) {
+            linhaDAO.delete(linha);
+        }
+
     }
 
 }

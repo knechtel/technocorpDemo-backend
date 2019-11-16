@@ -10,8 +10,9 @@ public class Coordinate {
     private Integer id;
     private Double lat;
     private Double lng;
-    private Integer idLinha;
-    @ManyToOne
+
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "id_linha", foreignKey = @ForeignKey(name = "fk_linhaCoordinate"))
     private Linha linha;
 
     public Integer getId() {
@@ -46,11 +47,5 @@ public class Coordinate {
         this.linha = linha;
     }
 
-    public Integer getIdLinha() {
-        return idLinha;
-    }
 
-    public void setIdLinha(Integer idLinha) {
-        this.idLinha = idLinha;
-    }
 }

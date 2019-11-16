@@ -1,6 +1,6 @@
 package br.com.technocorp.service;
 
-import br.com.technocorp.bean.IntinerarioWrapper;
+
 import br.com.technocorp.bean.Linha;
 import com.google.gson.Gson;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
@@ -24,14 +24,13 @@ public class LinhaService {
         Response response = target.request().get();
 
         String responseAsString = response.readEntity(String.class);
-        System.out.println(responseAsString);
-        IntinerarioWrapper intinerarioWrapper=null;
+
         Gson gson = new Gson();
         try {
             FileWriter writer = new FileWriter(System.getProperty("user.dir")+"/linhas.json");
             writer.write(responseAsString);
             writer.flush();
-            writer.close();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -44,6 +43,9 @@ public class LinhaService {
             System.out.println("AQUIII");
             for (Linha l:linhas
                  ) {
+                System.out.println(">>>>>>>");
+                System.out.println(l.getCodigo());
+                System.out.println("===========                 ");
                 listLinha.add(l);
             }
 

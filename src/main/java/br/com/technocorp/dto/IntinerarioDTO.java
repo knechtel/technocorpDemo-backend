@@ -1,10 +1,12 @@
-package br.com.technocorp.bean;
+package br.com.technocorp.dto;
 
+
+import br.com.technocorp.bean.Coordinate;
 
 import java.util.List;
 import java.util.Map;
 
-public class CoordinateJson {
+public class IntinerarioDTO {
 
     private Integer idLinha;
     private String Nome;

@@ -1,1 +1,52 @@
 http://localhost:8080/swagger-ui.html
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+delete intinerario e linha
+
+http://localhost:8080/api/coordinate/delete
+{
+
+  "idMysql": "13",
+  "idLinha":"13"
+
+}
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Criar intinerário
+
+http://localhost:8080/api/coordinate/create
+
+{
+  "codigo": "string",
+
+
+  "listCoordinate": [
+    {
+      "lat": 0,
+      "lng": 0
+    }
+  ],
+  "nome": "string"
+}
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+encontrar por nome
+
+http://localhost:8080/api/linha/findByName
+
+{
+	"nome":"A"
+}
+=====================================
+lista intinerarios no banco e externo
+
+http://localhost:8080/api/coordinate/list
+
+{
+	"codigo":"5565"
+}
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+listar todas as linhas de ônibus
+
+http://localhost:8080/api/linha/lista
+
+====================================
+

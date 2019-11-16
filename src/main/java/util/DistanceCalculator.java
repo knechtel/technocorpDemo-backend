@@ -1,11 +1,9 @@
-package uti;
+package util;
 
 
 
 
-import java.util.*;
 import java.lang.*;
-import java.io.*;
 
 class DistanceCalculator
 {

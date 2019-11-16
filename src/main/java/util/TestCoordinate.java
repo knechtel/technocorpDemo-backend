@@ -1,21 +1,14 @@
-package uti;
+package util;
 
 import br.com.technocorp.bean.Coordinate;
-import br.com.technocorp.bean.CoordinateDTO;
-import br.com.technocorp.bean.CoordinateJson;
+import br.com.technocorp.dto.IntinerarioDTO;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import org.jboss.resteasy.client.jaxrs.ResteasyClient;
-import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
-import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.json.simple.JSONObject;
 
-import javax.ws.rs.core.Response;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.*;
@@ -23,7 +16,7 @@ import java.util.*;
 public class TestCoordinate {
 
     public static void main(String[] args) {
-//        List<CoordinateJson> listCoordinate = new ArrayList<CoordinateJson>();
+//        List<IntinerarioDTO> listCoordinate = new ArrayList<IntinerarioDTO>();
 //        ResteasyClient client = new ResteasyClientBuilder().build();
 //        ResteasyWebTarget target = client.target("http://www.poatransporte.com.br/php/facades/process.php?a=il&p=5565" );
 //        Response response = target.request().get();
@@ -40,7 +33,7 @@ public class TestCoordinate {
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
-        CoordinateJson coordinate = null;
+        IntinerarioDTO coordinate = null;
         Gson gsonReader = new Gson();
 
         try (Reader reader = new FileReader(System.getProperty("user.dir") + "/coordinate.json")) {
@@ -56,7 +49,7 @@ public class TestCoordinate {
 
                 String linha = null;
                 try {
-                    linha = hashMap.getValue().toJSONString();
+                        linha = hashMap.getValue().toJSONString();
                     System.out.println(linha);
                     cnt++;
                 } catch (ClassCastException e) {

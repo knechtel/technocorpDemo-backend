@@ -1,4 +1,4 @@
-package br.com.technocorp.bean;
+package br.com.technocorp.dto;
 
 public class CoordinateDTO {
 

@@ -17,6 +17,13 @@ public interface LinhaDAO extends CrudRepository<Linha, Integer> {
     @Query("Select i from Linha i  where i.id = :codigo")
     public Linha findByIDW(@Param("codigo") Integer codigo);
 
+    @Query("Select i from Linha i  where i.id = :codigo")
+    public Linha findByIDLast(@Param("codigo") Integer codigo);
+
     @Query("Select i from Linha i  where i.nome like %:name%")
     public List<Linha> findByName(@Param("name") String name);
+
+    @Query("Select i from Linha i  where i.codigo = :codigo")
+    public Linha findByCodigoString(@Param("codigo") String codigo);
+
 }

@@ -1,22 +1,17 @@
-package uti;
+package util;
 
-import br.com.technocorp.bean.IntinerarioWrapper;
+
 import br.com.technocorp.bean.Linha;
 import com.google.gson.Gson;
-import com.thoughtworks.xstream.XStream;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.List;
 
 public class Test {
 
@@ -27,7 +22,7 @@ public class Test {
 
         String responseAsString = response.readEntity(String.class);
         System.out.println(responseAsString);
-        IntinerarioWrapper intinerarioWrapper=null;
+
         Gson gson = new Gson();
         try {
             FileWriter writer = new FileWriter(System.getProperty("user.dir")+"/linhas.json");

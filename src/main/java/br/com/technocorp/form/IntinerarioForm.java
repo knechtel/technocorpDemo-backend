@@ -1,15 +1,17 @@
-package br.com.technocorp.bean;
+package br.com.technocorp.form;
 
+import br.com.technocorp.bean.Coordinate;
+import br.com.technocorp.dto.CoordinateDTO;
 
 import java.util.List;
-import java.util.Map;
 
-public class CoordinateJson {
+public class IntinerarioForm {
 
+    private Integer idMysql;
     private Integer idLinha;
     private String Nome;
     private String codigo;
-    private List<Coordinate> listCoordinate;
+    private List<CoordinateForm> listCoordinate;
 
     public Integer getIdLinha() {
         return idLinha;
@@ -35,11 +37,19 @@ public class CoordinateJson {
         this.codigo = codigo;
     }
 
-    public List<Coordinate> getListCoordinate() {
+    public List<CoordinateForm> getListCoordinate() {
         return listCoordinate;
     }
 
-    public void setListCoordinate(List<Coordinate> listCoordinate) {
+    public void setListCoordinate(List<CoordinateForm> listCoordinate) {
         this.listCoordinate = listCoordinate;
+    }
+
+    public Integer getIdMysql() {
+        return idMysql;
+    }
+
+    public void setIdMysql(Integer idMysql) {
+        this.idMysql = idMysql;
     }
 }

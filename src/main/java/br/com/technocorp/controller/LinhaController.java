@@ -1,7 +1,7 @@
 package br.com.technocorp.controller;
 
 import br.com.technocorp.bean.Linha;
-import br.com.technocorp.bean.IntinerarioForm;
+import br.com.technocorp.form.LinhaForm;
 import br.com.technocorp.dao.LinhaDAO;
 import br.com.technocorp.service.LinhaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ public class LinhaController {
 
 
     @RequestMapping(value="salvar",consumes = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
-    public Iterable<Linha> salva(@Valid @RequestBody IntinerarioForm autorForm) {
+    public Iterable<Linha> salva(@Valid @RequestBody LinhaForm autorForm) {
         linhaDAO.save(autorForm.build());
         return findAll();
     }
@@ -45,9 +45,9 @@ public class LinhaController {
 
     @RequestMapping(value="doPersistList", method=RequestMethod.POST,consumes="application/json",produces="application/json")
     @ResponseBody
-    public ResponseEntity doPersistList(@RequestBody IntinerarioForm[] list) {
+    public ResponseEntity doPersistList(@RequestBody LinhaForm[] list) {
 
-        for (IntinerarioForm i : list) {
+        for (LinhaForm i : list) {
             if (linhaDAO.findByIDW(i.build().getId()) == null) {
                 linhaDAO.save(i.build());
             }
@@ -57,7 +57,7 @@ public class LinhaController {
     }
 
     @RequestMapping(value = "/doCreate", method = RequestMethod.POST)
-    public ResponseEntity create(@RequestBody IntinerarioForm intinerarioForm) {
+    public ResponseEntity create(@RequestBody LinhaForm intinerarioForm) {
 
         if (linhaDAO.findByCode(intinerarioForm.build().getCodigo()) == null) {
             linhaDAO.save(intinerarioForm.build());
@@ -68,7 +68,7 @@ public class LinhaController {
     }
 
     @RequestMapping(value = "/findByName", method = RequestMethod.POST)
-    public List<Linha> findByName(@RequestBody IntinerarioForm intinerarioForm) {
+    public List<Linha> findByName(@RequestBody LinhaForm intinerarioForm) {
 
 
 
