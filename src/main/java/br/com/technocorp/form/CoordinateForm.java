@@ -7,6 +7,8 @@ public class CoordinateForm {
     private String lat;
     private String lng;
 
+    private Integer raiokm;
+
     private Integer idInt;
 
 
@@ -41,4 +43,11 @@ public class CoordinateForm {
         return c;
     }
 
+    public Integer getRaiokm() {
+        return raiokm;
+    }
+
+    public void setRaiokm(Integer raiokm) {
+        this.raiokm = raiokm;
+    }
 }

@@ -77,11 +77,11 @@ public class LinhaController {
         return linhaDAO.findByName(linhaForm.getNome());
     }
 
-    @RequestMapping(value = "getLinhas", method = RequestMethod.POST)
+    @RequestMapping(value = "linhasByRaioKm", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity gettAllLinhas(@RequestBody CoordinateForm form){
+    public List<LinhaFormView> gettAllLinhas(@RequestBody CoordinateForm form){
 
-        return new ResponseEntity(HttpStatus.OK);
+        return linhaService.getAllLinhasByDistance(new Double(form.getLat().trim()),new Double(form.getLng().trim()),form.getRaiokm());
     }
 
 }

@@ -13,6 +13,7 @@ import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import util.DistanceCalculator;
 
 import javax.ws.rs.core.Response;
 import java.io.FileReader;
@@ -21,6 +22,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
+
 @Service
 public class LinhaService {
 
@@ -28,7 +30,8 @@ public class LinhaService {
     private LinhaDAO linhaDAO;
     @Autowired
     private CoordinateDAO coordinateDAO;
-    public List<Linha> findAllWeb(){
+
+    public List<Linha> findAllWeb() {
         List<Linha> listLinha = new ArrayList<Linha>();
         ResteasyClient client = new ResteasyClientBuilder().build();
         ResteasyWebTarget target = client.target("http://www.poatransporte.com.br/php/facades/process.php?a=nc&p=%&t=o");
@@ -38,7 +41,7 @@ public class LinhaService {
 
         Gson gson = new Gson();
         try {
-            FileWriter writer = new FileWriter(System.getProperty("user.dir")+"/linhas.json");
+            FileWriter writer = new FileWriter(System.getProperty("user.dir") + "/linhas.json");
             writer.write(responseAsString);
             writer.flush();
 
@@ -48,12 +51,12 @@ public class LinhaService {
 
         Gson gsonReader = new Gson();
 
-        try (Reader reader = new FileReader(System.getProperty("user.dir")+"/linhas.json")) {
+        try (Reader reader = new FileReader(System.getProperty("user.dir") + "/linhas.json")) {
 
             Linha[] linhas = gsonReader.fromJson(reader, Linha[].class);
             System.out.println("AQUIII");
-            for (Linha l:linhas
-                 ) {
+            for (Linha l : linhas
+            ) {
                 System.out.println(">>>>>>>");
                 System.out.println(l.getCodigo());
 
@@ -71,28 +74,28 @@ public class LinhaService {
     }
 
 
-    public Linha createLinha(LinhaForm linhaForm){
+    public Linha createLinha(LinhaForm linhaForm) {
         //se existir linha nao deixa cadastrar
         Linha linha = null;
-        List<Linha> linhaMesmoNome =linhaDAO.findName(linhaForm.getNome());
+        List<Linha> linhaMesmoNome = linhaDAO.findName(linhaForm.getNome());
 
-        if(linhaMesmoNome!=null&&linhaMesmoNome.size()>=1){
+        if (linhaMesmoNome != null && linhaMesmoNome.size() >= 1) {
             linhaForm.setAlreadInDatabase(true);
-        }else{
-        linha = linhaDAO.save(linhaForm.build());
-        for (Coordinate c:
-                linhaForm.buildList()) {
-            c.setLinha(linha);
-            coordinateDAO.save(c);
-        }
-        linha.setListCoordinate(linhaForm.buildList());
+        } else {
+            linha = linhaDAO.save(linhaForm.build());
+            for (Coordinate c :
+                    linhaForm.buildList()) {
+                c.setLinha(linha);
+                coordinateDAO.save(c);
+            }
+            linha.setListCoordinate(linhaForm.buildList());
 
         }
         return linha;
     }
 
-    public void delete(LinhaForm linhaForm){
-        for (Coordinate c:
+    public void delete(LinhaForm linhaForm) {
+        for (Coordinate c :
                 coordinateDAO.findIdLinha(linhaForm.getId())) {
             c.setLinha(null);
             System.out.println(c);
@@ -101,22 +104,47 @@ public class LinhaService {
         linhaDAO.delete(linhaDAO.findById(linhaForm.getId()).orElse(null));
 
     }
-    public Linha update(Linha linha){
+
+    public Linha update(Linha linha) {
         return linhaDAO.save(linha);
     }
 
 
-    public Iterable<LinhaFormView> findAll(){
+    public Iterable<LinhaFormView> findAll() {
         List<LinhaFormView> listLinha = new ArrayList<>();
-        for (Linha l:linhaDAO.findAllLinha()
-             ) {
-           LinhaFormView lfv = new LinhaFormView();
+        for (Linha l : linhaDAO.findAllLinha()
+        ) {
+            LinhaFormView lfv = new LinhaFormView();
 
-           lfv.setCodigo(l.getCodigo());
-           lfv.setNome(l.getNome());
-           lfv.setId(l.getId());
-           listLinha.add(lfv);
+            lfv.setCodigo(l.getCodigo());
+            lfv.setNome(l.getNome());
+            lfv.setId(l.getId());
+            listLinha.add(lfv);
         }
+        return listLinha;
+    }
+
+
+    public List<LinhaFormView> getAllLinhasByDistance(double lat, double lng, double raioKm) {
+        List<LinhaFormView> listLinha = new ArrayList();
+        Integer cnt = 0;
+        System.out.println("Aquiii !");
+        for (Coordinate c :
+                coordinateDAO.findAll()) {
+            System.out.println("distance  = " + DistanceCalculator.distance(new Double(c.getLat()), new Double(c.getLng()), lat, lng, "K"));
+            if (DistanceCalculator.distance(new Double(c.getLat()), new Double(c.getLng()), lat, lng, "K")
+                    <= raioKm) {
+
+                if (!listLinha.contains(new LinhaFormView().build(c.getLinha()))) {
+                    listLinha.add(new LinhaFormView().build(c.getLinha()));
+                }
+            }
+            cnt++;
+//            if (cnt == 10) {
+//                break;
+//            }
+        }
+
         return listLinha;
     }
 }
