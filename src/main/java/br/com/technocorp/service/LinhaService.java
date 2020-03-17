@@ -127,11 +127,8 @@ public class LinhaService {
 
     public List<LinhaFormView> getAllLinhasByDistance(double lat, double lng, double raioKm) {
         List<LinhaFormView> listLinha = new ArrayList();
-        Integer cnt = 0;
-        System.out.println("Aquiii !");
         for (Coordinate c :
                 coordinateDAO.findAll()) {
-            System.out.println("distance  = " + DistanceCalculator.distance(new Double(c.getLat()), new Double(c.getLng()), lat, lng, "K"));
             if (DistanceCalculator.distance(new Double(c.getLat()), new Double(c.getLng()), lat, lng, "K")
                     <= raioKm) {
 
@@ -139,10 +136,7 @@ public class LinhaService {
                     listLinha.add(new LinhaFormView().build(c.getLinha()));
                 }
             }
-            cnt++;
-//            if (cnt == 10) {
-//                break;
-//            }
+
         }
 
         return listLinha;
