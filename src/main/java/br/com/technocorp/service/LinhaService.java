@@ -8,6 +8,7 @@ import br.com.technocorp.dao.LinhaDAO;
 import br.com.technocorp.form.LinhaForm;
 import br.com.technocorp.form.LinhaFormView;
 import com.google.gson.Gson;
+import com.sun.org.apache.xpath.internal.objects.XNull;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
@@ -140,5 +141,18 @@ public class LinhaService {
         }
 
         return listLinha;
+    }
+
+    public List<LinhaFormView>findLinhaByName(LinhaFormView form){
+        List<LinhaFormView> listForm = new ArrayList<>();
+        for (Linha linha:
+                linhaDAO.findByName(form.getNome())) {
+            LinhaFormView lfv = new LinhaFormView();
+            lfv.setCodigo(linha.getCodigo());
+            lfv.setId(linha.getId());
+            lfv.setNome(linha.getNome());
+            listForm.add(lfv);
+        }
+        return  listForm;
     }
 }

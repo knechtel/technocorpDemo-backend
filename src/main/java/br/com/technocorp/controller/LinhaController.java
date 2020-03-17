@@ -73,8 +73,8 @@ public class LinhaController {
     }
 
     @RequestMapping(value = "/findByName", method = RequestMethod.POST)
-    public List<Linha> findByName(@RequestBody LinhaForm linhaForm) {
-        return linhaDAO.findByName(linhaForm.getNome());
+    public List<LinhaFormView> findByName(@RequestBody LinhaFormView linhaForm) {
+        return linhaService.findLinhaByName(linhaForm);
     }
 
     @RequestMapping(value = "linhasByRaioKm", method = RequestMethod.POST)
