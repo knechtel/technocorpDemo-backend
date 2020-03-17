@@ -18,7 +18,12 @@ public interface CoordinateDAO extends CrudRepository<Coordinate, Integer> {
     @Query("Select c from Coordinate c  where c.lat = :lat and c.lng =:lng")
     public Coordinate findLat(@Param("lat") Double lat,@Param("lng") Double lng);
 
-    @Query(value = " delete * from coordinate join linha on coordinate.id_linha = linha.id where coordinate.id_linha=?;",nativeQuery = true)
-    public void deleteByLinha( Integer idLinha);
+    @Query("Select c from Coordinate c  WHERE c.linha.id = :id")
+    public List<Coordinate> findIdLinha(@Param("id") Integer id);
+
+
+//    @Query(value = " delete from Coordinate c join fetch c.linha where coordinate.linha.id in (select c.linha.id from Coordinate c  " +
+//            " join fetch c.linha where c.linha.id =  :id_Linha)")
+//    public void deleteByLinha(@Param("id_Linha") Integer id_Linha);
 
 }

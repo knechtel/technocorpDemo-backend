@@ -62,8 +62,8 @@ public class TestCoordinate {
 
                     Coordinate c = new Coordinate();
 
-                    c.setLat(new Double(strAux[7]));
-                    c.setLng(new Double(strAux[3]));
+//                    c.setLat(new Double(strAux[7]));
+//                    c.setLng(new Double(strAux[3]));
                 }
 
             }

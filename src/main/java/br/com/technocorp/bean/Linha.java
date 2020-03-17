@@ -5,28 +5,21 @@ import com.thoughtworks.xstream.XStream;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Linha implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     private Integer id;
+  
     private Integer idLinha;
-
     private String codigo;
     private String nome;
 
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "linha")
+    @OneToMany(mappedBy = "linha")
     private List<Coordinate> listCoordinate;
 
-    public Integer getIdLinha() {
-        return idLinha;
-    }
-
-    public void setIdLinha(Integer idLinha) {
-        this.idLinha = idLinha;
-    }
 
     public Integer getId() {
         return id;
@@ -62,5 +55,27 @@ public class Linha implements Serializable {
     public String toXML() {
         // TODO Auto-generated method stub
         return new XStream().toXML(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Linha linha = (Linha) o;
+        return Objects.equals(codigo, linha.codigo) &&
+                Objects.equals(nome, linha.nome);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(codigo, nome);
+    }
+
+    public Integer getIdLinha() {
+        return idLinha;
+    }
+
+    public void setIdLinha(Integer idLinha) {
+        this.idLinha = idLinha;
     }
 }

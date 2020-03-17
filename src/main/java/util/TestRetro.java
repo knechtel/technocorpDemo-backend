@@ -1,6 +1,7 @@
 package util;
 
 
+import br.com.technocorp.bean.Coordinate;
 import com.google.gson.JsonElement;
 
 import com.google.gson.stream.JsonReader;
@@ -42,7 +43,7 @@ public class TestRetro {
                 JSONParser jsonParser = new JSONParser();
                 JSONObject obj = (JSONObject) jsonParser.parse(reader);
                 Set<Map.Entry<String, JsonElement>> set = obj.entrySet();
-                System.out.println(set);
+             //   System.out.println(set);
                 String line = null;
 
 
@@ -55,6 +56,8 @@ public class TestRetro {
                     try {
                         linha = hashMap.getValue().toJSONString();
                         System.out.println(">> mais um teste ->>"+linha);
+                        System.out.println(">> tratando ->>"+hashMap.getValue().get("lng"));
+
 
                     } catch (ClassCastException e) {
 

@@ -16,7 +16,9 @@ import java.util.Set;
 
 public  interface ApiIntinerario {
 
-
     @GET("http://www.poatransporte.com.br/php/facades/process.php")
     public Call<ResponseBody> doBoleto(@Query("a") String a, @Query("p") Integer p);
+
+    @GET("http://www.poatransporte.com.br/php/facades/process.php")
+    public Call<ResponseBody> getIntinerario(@Query("a") String a, @Query("p") Integer p);
 }

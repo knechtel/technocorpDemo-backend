@@ -8,11 +8,11 @@ public class Coordinate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private Double lat;
-    private Double lng;
+    private String lat;
+    private String lng;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinColumn(name = "id_linha", foreignKey = @ForeignKey(name = "fk_linhaCoordinate"))
+    @JoinColumn(name = "id_linha", foreignKey = @ForeignKey(name = "id"))
     private Linha linha;
 
     public Integer getId() {
@@ -23,19 +23,19 @@ public class Coordinate {
         this.id = id;
     }
 
-    public Double getLat() {
+    public String getLat() {
         return lat;
     }
 
-    public void setLat(Double lat) {
+    public void setLat(String lat) {
         this.lat = lat;
     }
 
-    public Double getLng() {
+    public String getLng() {
         return lng;
     }
 
-    public void setLng(Double lng) {
+    public void setLng(String lng) {
         this.lng = lng;
     }
 

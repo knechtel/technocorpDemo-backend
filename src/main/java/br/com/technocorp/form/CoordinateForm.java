@@ -4,25 +4,25 @@ import br.com.technocorp.bean.Coordinate;
 
 public class CoordinateForm {
 
-    private Double lat;
-    private Double lng;
+    private String lat;
+    private String lng;
 
     private Integer idInt;
 
 
-    public Double getLat() {
+    public String getLat() {
         return lat;
     }
 
-    public void setLat(Double lat) {
+    public void setLat(String lat) {
         this.lat = lat;
     }
 
-    public Double getLng() {
+    public String getLng() {
         return lng;
     }
 
-    public void setLng(Double lng) {
+    public void setLng(String lng) {
         this.lng = lng;
     }
 
