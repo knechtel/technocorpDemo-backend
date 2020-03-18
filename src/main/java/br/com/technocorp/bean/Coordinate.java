@@ -47,5 +47,12 @@ public class Coordinate {
         this.linha = linha;
     }
 
+    public Coordinate toSingleCoordinate(){
+        Coordinate c = new Coordinate();
+        c.setLat(lat);
+        c.setLng(lng);
+        c.setId(id);
 
+        return c;
+    }
 }

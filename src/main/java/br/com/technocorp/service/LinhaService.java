@@ -1,28 +1,38 @@
 package br.com.technocorp.service;
 
+import java.lang.reflect.Type;
 
+import com.google.gson.reflect.TypeToken;
 import br.com.technocorp.bean.Coordinate;
 import br.com.technocorp.bean.Linha;
 import br.com.technocorp.dao.CoordinateDAO;
 import br.com.technocorp.dao.LinhaDAO;
+import br.com.technocorp.form.CoordinateForm;
+import br.com.technocorp.form.IntinerarioForm;
 import br.com.technocorp.form.LinhaForm;
 import br.com.technocorp.form.LinhaFormView;
 import com.google.gson.Gson;
-import com.sun.org.apache.xpath.internal.objects.XNull;
-import org.jboss.resteasy.client.jaxrs.ResteasyClient;
-import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
-import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
+import com.google.gson.JsonElement;
+import com.google.gson.reflect.TypeToken;
+import okhttp3.ResponseBody;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import util.ApiIntinerario;
 import util.DistanceCalculator;
 
-import javax.ws.rs.core.Response;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.Reader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Service
 public class LinhaService {
@@ -32,46 +42,69 @@ public class LinhaService {
     @Autowired
     private CoordinateDAO coordinateDAO;
 
-    public List<Linha> findAllWeb() {
-        List<Linha> listLinha = new ArrayList<Linha>();
-        ResteasyClient client = new ResteasyClientBuilder().build();
-        ResteasyWebTarget target = client.target("http://www.poatransporte.com.br/php/facades/process.php?a=nc&p=%&t=o");
-        Response response = target.request().get();
 
-        String responseAsString = response.readEntity(String.class);
-
-        Gson gson = new Gson();
+    public List<LinhaFormView> findAllWeb() {
         try {
-            FileWriter writer = new FileWriter(System.getProperty("user.dir") + "/linhas.json");
-            writer.write(responseAsString);
-            writer.flush();
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("http://www.poatransporte.com.br/php/facades/process.php/")
 
-        Gson gsonReader = new Gson();
+                    .build();
 
-        try (Reader reader = new FileReader(System.getProperty("user.dir") + "/linhas.json")) {
+            ApiIntinerario api = retrofit.create(ApiIntinerario.class);
 
-            Linha[] linhas = gsonReader.fromJson(reader, Linha[].class);
-            System.out.println("AQUIII");
-            for (Linha l : linhas
-            ) {
-                System.out.println(">>>>>>>");
-                System.out.println(l.getCodigo());
+            Response<ResponseBody> response = api.getAllLinhas("nc", "o").execute();
 
-                System.out.println("===========                 ");
-                l.getIdLinha();
-                System.out.println("meu deus !! linha");
-                listLinha.add(l);
+            InputStream is = response.body().byteStream();
+
+            try (InputStreamReader streamReader = new InputStreamReader(is)) {
+                BufferedReader reader = new BufferedReader(streamReader);
+
+
+                Type listType = new TypeToken<ArrayList<LinhaFormView>>() {
+                }.getType();
+                List<LinhaFormView> listLinha = new Gson().fromJson(reader, listType);
+                for (LinhaFormView l :
+                        listLinha) {
+                    Linha linha = l.toLinha(l);
+                    if (linhaDAO.findByCode(linha.getCodigo(), linha.getNome()) == null) {
+                        linhaDAO.save(linha);
+                    }
+                }
             }
 
-        } catch (IOException e) {
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        response.close();
-        return listLinha;
+
+    List<LinhaFormView>linhaFormView =new ArrayList<>();
+     for(Linha l:linhaDAO.findAll()){
+        linhaFormView.add(l.build(l));
+     }
+     return linhaFormView;
+    }
+
+    public LinhaForm read(LinhaForm linhaForm) {
+        LinhaForm linhaDTO = new LinhaForm();
+        Linha linha = linhaDAO.findById(linhaForm.getId()).orElse(null);
+        if(linha!=null)
+        {
+            linhaDTO.setId(linha.getId());
+            linhaDTO.setNome(linha.getNome());
+            linhaDTO.setCodigo(linha.getCodigo());
+            List<CoordinateForm>listCoordinateForm = new ArrayList<>();
+            for(Coordinate c:linha.getListCoordinate()){
+                CoordinateForm form = new CoordinateForm();
+                form.setLat(c.getLat());
+                form.setLng(c.getLng());
+                listCoordinateForm.add(form);
+            }
+            linhaDTO.setListCoordenada(listCoordinateForm);
+        }
+
+
+        return linhaDTO;
     }
 
 
@@ -99,7 +132,6 @@ public class LinhaService {
         for (Coordinate c :
                 coordinateDAO.findIdLinha(linhaForm.getId())) {
             c.setLinha(null);
-            System.out.println(c);
             coordinateDAO.save(c);
         }
         linhaDAO.delete(linhaDAO.findById(linhaForm.getId()).orElse(null));
@@ -116,7 +148,6 @@ public class LinhaService {
         for (Linha l : linhaDAO.findAllLinha()
         ) {
             LinhaFormView lfv = new LinhaFormView();
-
             lfv.setCodigo(l.getCodigo());
             lfv.setNome(l.getNome());
             lfv.setId(l.getId());
@@ -130,22 +161,23 @@ public class LinhaService {
         List<LinhaFormView> listLinha = new ArrayList();
         for (Coordinate c :
                 coordinateDAO.findAll()) {
-            if (DistanceCalculator.distance(new Double(c.getLat()), new Double(c.getLng()), lat, lng, "K")
-                    <= raioKm) {
+            if(c.getLng()!=null&&c.getLng()!=null) {
+                if (DistanceCalculator.distance(new Double(c.getLat()), new Double(c.getLng()), lat, lng, "K")
+                        <= raioKm) {
 
-                if (!listLinha.contains(new LinhaFormView().build(c.getLinha()))) {
-                    listLinha.add(new LinhaFormView().build(c.getLinha()));
+                    if (!listLinha.contains(new LinhaFormView().build(c.getLinha()))) {
+                        listLinha.add(new LinhaFormView().build(c.getLinha()));
+                    }
                 }
             }
-
         }
 
         return listLinha;
     }
 
-    public List<LinhaFormView>findLinhaByName(LinhaFormView form){
+    public List<LinhaFormView> findLinhaByName(LinhaFormView form) {
         List<LinhaFormView> listForm = new ArrayList<>();
-        for (Linha linha:
+        for (Linha linha :
                 linhaDAO.findByName(form.getNome())) {
             LinhaFormView lfv = new LinhaFormView();
             lfv.setCodigo(linha.getCodigo());
@@ -153,6 +185,6 @@ public class LinhaService {
             lfv.setNome(linha.getNome());
             listForm.add(lfv);
         }
-        return  listForm;
+        return listForm;
     }
 }

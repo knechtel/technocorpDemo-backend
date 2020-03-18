@@ -3,6 +3,7 @@ package br.com.technocorp.controller;
 import br.com.technocorp.bean.Coordinate;
 import br.com.technocorp.bean.Linha;
 import br.com.technocorp.form.CoordinateForm;
+import br.com.technocorp.form.IntinerarioCoordinateForm;
 import br.com.technocorp.form.LinhaForm;
 import br.com.technocorp.dao.LinhaDAO;
 import br.com.technocorp.form.LinhaFormView;
@@ -32,16 +33,19 @@ public class LinhaController {
 
     @RequestMapping(value="create",consumes = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
     public ResponseEntity create(@Valid @RequestBody LinhaForm linhaForm) {
-        linhaForm.setAlreadInDatabase(false);
         linhaService.createLinha(linhaForm);
-
         if(linhaForm.isAlreadInDatabase()){
             return new ResponseEntity(HttpStatus.CONFLICT);
         }
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    //delete linha
+    @RequestMapping(value="read",consumes = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
+    public LinhaForm read(@RequestBody LinhaForm linhaForm) {
+        return  linhaService.read(linhaForm);
+
+    }
+
     @RequestMapping(value="delete",consumes = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
     public LinhaForm delete(@Valid @RequestBody LinhaForm linhaForm){
         linhaService.delete(linhaForm);
@@ -50,17 +54,8 @@ public class LinhaController {
 
 
     @RequestMapping(value = "lista", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Iterable<LinhaFormView> findAll() {
-        //colocar isso em classe de serviço
-        for (Linha linha:linhaService.findAllWeb()
-             ) {
-            if (linhaDAO.findByCode(linha.getCodigo(),linha.getNome()) ==null) {
-                linha.setIdLinha(linha.getId());
-                linhaDAO.save(linha);
-            }
-
-        }
-        return linhaService.findAll();
+    public List<LinhaFormView> findAll() {
+        return linhaService.findAllWeb();
     }
 
 
@@ -82,6 +77,12 @@ public class LinhaController {
     public List<LinhaFormView> gettAllLinhas(@RequestBody CoordinateForm form){
 
         return linhaService.getAllLinhasByDistance(new Double(form.getLat().trim()),new Double(form.getLng().trim()),form.getRaiokm());
+    }
+
+    @RequestMapping(value = "listaIntinerario", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+    @ResponseBody
+    public List<Coordinate> listaIntinerario(@RequestBody IntinerarioCoordinateForm form) {
+        return intinerarioService.findAllIntinerario(form);
     }
 
 }

@@ -5,6 +5,7 @@ import br.com.technocorp.bean.Linha;
 import br.com.technocorp.dao.CoordinateDAO;
 import br.com.technocorp.dao.LinhaDAO;
 import br.com.technocorp.form.CoordinateForm;
+import br.com.technocorp.form.IntinerarioCoordinateForm;
 import br.com.technocorp.form.IntinerarioForm;
 import com.google.gson.JsonElement;
 import okhttp3.ResponseBody;
@@ -45,7 +46,7 @@ public class IntinerarioService {
 
                 ApiIntinerario api = retrofit.create(ApiIntinerario.class);
 
-                Response<ResponseBody> response = api.doBoleto("il", linha.getIdLinha()).execute();
+                Response<ResponseBody> response = api.getIntinerario("il", linha.getIdLinha()).execute();
 
                 InputStream is = response.body().byteStream();
 
@@ -63,29 +64,23 @@ public class IntinerarioService {
 
                         Map.Entry<String, JSONObject> hashMap = (Map.Entry<String, JSONObject>) je;
 
-                        String linha1 = null;
+
                         try {
-
-
-                            System.out.println("go ->>>> linha nome = " + linha.getNome() + " id = " + linha.getIdLinha());
-                            System.out.println("aqui ");
-
-
                             Coordinate c = new Coordinate();
                             c.setLinha(linha);
                             try {
-                                c.setLat( hashMap.getValue().get("lat").toString());
-                                c.setLng( hashMap.getValue().get("lng").toString());
+                                c.setLat(hashMap.getValue().get("lat").toString());
+                                c.setLng(hashMap.getValue().get("lng").toString());
                             } catch (ClassCastException e1) {
-                                System.out.println(hashMap.getValue().get("lat"));
-                                System.out.println("___________________________");
-                                c.setLng(null);
-                                c.setLng(null);
                             }
                             System.out.println(">>>> coordenada " + c.getLat());
-                            coordinateDAO.save(c);
 
-
+                            if (c.getLat() != null && c.getLng() != null) {
+                                if (coordinateDAO.findByLatAndLgnAndIdLinha(c.getLinha().getIdLinha(),
+                                        c.getLat(), c.getLng()).size() == 0) {
+                                    coordinateDAO.save(c);
+                                }
+                            }
 
 
                         } catch (ClassCastException e) {
@@ -96,35 +91,11 @@ public class IntinerarioService {
 
                 }
 
-                //JsonReader j = new JsonReader(is  ,"UTF-8");
-
-                //System.out.println(response.body());
-                //System.out.println(response.body().toArray());
-//            JSONParser jsonParser = new JSONParser();
-//            JSONObject obj = (JSONObject) jsonParser.parse(response.body().to);
-//            Set<Map.Entry<String, JsonElement>> set = obj.entrySet();
-//
-//            for (Object je : set) {
-//
-//                Map.Entry<String, JSONObject> hashMap = (Map.Entry<String, JSONObject>) je;
-//
-//                String linha = null;
-//                try {
-//                    linha = hashMap.getValue().toJSONString();
-//                    System.out.println(linha);
-//                } catch (ClassCastException e) {
-//
-//                }
-//            }
-                //System.out.println(response.body().iterator().hasNext());
-//
-
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        System.out.println("FIM -- - - ");
+
     }
 
     public List<Coordinate> findAllWeb(String codigo) {
@@ -142,7 +113,7 @@ public class IntinerarioService {
 
             ApiIntinerario api = retrofit.create(ApiIntinerario.class);
 
-            Response<ResponseBody> response = api.doBoleto("il", new Integer(codigo)).execute();
+            Response<ResponseBody> response = api.getIntinerario("il", new Integer(codigo)).execute();
 
             InputStream is = response.body().byteStream();
 
@@ -152,17 +123,15 @@ public class IntinerarioService {
                 JSONParser jsonParser = new JSONParser();
                 JSONObject obj = (JSONObject) jsonParser.parse(reader);
                 Set<Map.Entry<String, JsonElement>> set = obj.entrySet();
-                System.out.println(set);
-                String line = null;
 
 
                 for (Object je : set) {
 
                     Map.Entry<String, JSONObject> hashMap = (Map.Entry<String, JSONObject>) je;
 
-                    String linha = null;
+
                     try {
-                        linha = hashMap.getValue().toJSONString();
+
                         Coordinate c = new Coordinate();
                         c.setLat(hashMap.getValue().get("lat").toString());
                         c.setLng(hashMap.getValue().get("lng").toString());
@@ -175,29 +144,6 @@ public class IntinerarioService {
                 reader.close();
 
             }
-
-            //JsonReader j = new JsonReader(is  ,"UTF-8");
-
-            //System.out.println(response.body());
-            //System.out.println(response.body().toArray());
-//            JSONParser jsonParser = new JSONParser();
-//            JSONObject obj = (JSONObject) jsonParser.parse(response.body().to);
-//            Set<Map.Entry<String, JsonElement>> set = obj.entrySet();
-//
-//            for (Object je : set) {
-//
-//                Map.Entry<String, JSONObject> hashMap = (Map.Entry<String, JSONObject>) je;
-//
-//                String linha = null;
-//                try {
-//                    linha = hashMap.getValue().toJSONString();
-//                    System.out.println(linha);
-//                } catch (ClassCastException e) {
-//
-//                }
-//            }
-            //System.out.println(response.body().iterator().hasNext());
-//
 
 
         } catch (Exception e) {
@@ -224,6 +170,7 @@ public class IntinerarioService {
         }
     }
 
+    //rever isso
     public void delete(IntinerarioForm intinerarioForm) {
 
         List<Coordinate> list = coordinateDAO.findByIDW(intinerarioForm.getIdLinha());
@@ -239,6 +186,15 @@ public class IntinerarioService {
             linhaDAO.delete(linha);
         }
 
+    }
+
+    public List<Coordinate> findAllIntinerario(IntinerarioCoordinateForm form) {
+        List<Coordinate> listCoordinate = new ArrayList<>();
+
+        for (Coordinate c : coordinateDAO.findIdLinha(Integer.parseInt(form.getCodigo()))) {
+            listCoordinate.add(c.toSingleCoordinate());
+        }
+        return listCoordinate;
     }
 
 }

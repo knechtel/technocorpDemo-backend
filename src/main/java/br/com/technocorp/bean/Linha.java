@@ -1,5 +1,6 @@
 package br.com.technocorp.bean;
 
+import br.com.technocorp.form.LinhaFormView;
 import com.thoughtworks.xstream.XStream;
 
 import javax.persistence.*;
@@ -77,5 +78,13 @@ public class Linha implements Serializable {
 
     public void setIdLinha(Integer idLinha) {
         this.idLinha = idLinha;
+    }
+
+    public LinhaFormView build(Linha linha){
+        LinhaFormView linhaFormView = new LinhaFormView();
+        linhaFormView.setNome(linha.getNome());
+        linhaFormView.setCodigo(linha.getCodigo());
+        linhaFormView.setId(linha.getId());
+        return linhaFormView;
     }
 }

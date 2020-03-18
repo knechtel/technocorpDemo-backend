@@ -56,4 +56,12 @@ public class LinhaFormView {
         lfv.setCodigo(linha.getCodigo());
         return lfv;
     }
+
+    public Linha toLinha(LinhaFormView linhaForm) {
+        Linha l = new Linha();
+        l.setNome(linhaForm.getNome());
+        l.setCodigo(linhaForm.getCodigo());
+        l.setIdLinha(linhaForm.getId());
+        return l;
+    }
 }

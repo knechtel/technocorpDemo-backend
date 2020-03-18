@@ -1,8 +1,5 @@
 package br.com.technocorp.form;
 
-import br.com.technocorp.bean.Coordinate;
-import br.com.technocorp.dto.CoordinateDTO;
-
 import java.util.List;
 
 public class IntinerarioForm {
