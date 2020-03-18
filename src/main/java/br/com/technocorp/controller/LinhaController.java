@@ -72,7 +72,7 @@ public class LinhaController {
         return linhaService.findLinhaByName(linhaForm);
     }
 
-    @RequestMapping(value = "linhasByRaioKm", method = RequestMethod.POST)
+    @RequestMapping(value = "linhasByRaioEmKm", method = RequestMethod.POST)
     @ResponseBody
     public List<LinhaFormView> gettAllLinhas(@RequestBody CoordinateForm form){
 
