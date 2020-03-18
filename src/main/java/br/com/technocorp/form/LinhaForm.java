@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LinhaForm {
-    private boolean alreadInDatabase= false;
+
     private Integer id;
     private Integer idLinha;
     private String codigo;
@@ -84,14 +84,6 @@ public class LinhaForm {
         }
         linhaForm.setListCoordenada(list);
     return linhaForm;
-    }
-
-    public boolean isAlreadInDatabase() {
-        return alreadInDatabase;
-    }
-
-    public void setAlreadInDatabase(boolean alreadInDatabase) {
-        this.alreadInDatabase = alreadInDatabase;
     }
 
     public Integer getIdLinha() {

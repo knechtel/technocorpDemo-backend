@@ -33,8 +33,8 @@ public class LinhaController {
 
     @RequestMapping(value="create",consumes = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
     public ResponseEntity create(@Valid @RequestBody LinhaForm linhaForm) {
-        linhaService.createLinha(linhaForm);
-        if(linhaForm.isAlreadInDatabase()){
+
+        if(linhaService.createLinha(linhaForm)==null){
             return new ResponseEntity(HttpStatus.CONFLICT);
         }
         return new ResponseEntity(HttpStatus.OK);

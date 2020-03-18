@@ -114,7 +114,7 @@ public class LinhaService {
         List<Linha> linhaMesmoNome = linhaDAO.findName(linhaForm.getNome());
 
         if (linhaMesmoNome != null && linhaMesmoNome.size() >= 1) {
-            linhaForm.setAlreadInDatabase(true);
+            return null;
         } else {
             linha = linhaDAO.save(linhaForm.build());
             for (Coordinate c :
