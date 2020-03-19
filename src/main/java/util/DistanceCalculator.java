@@ -1,16 +1,12 @@
 package util;
 
 
-
-
 import java.lang.*;
 
-public class DistanceCalculator
-{
-    public static void main (String[] args) throws java.lang.Exception
-    {
+public class DistanceCalculator {
+    public static void main(String[] args) throws java.lang.Exception {
         System.out.println(distance(32.9697, -96.80322, 29.46786, -98.53506, "M") + " Miles\n");
-        System.out.println(distance( -30.12419079817800000, -51.22378628234100000, -30.11755079817800000, -51.20624428234100000, "K") + " Kilometers\n");
+        System.out.println(distance(-30.12419079817800000, -51.22378628234100000, -30.11755079817800000, -51.20624428234100000, "K") + " Kilometers\n");
         System.out.println(distance(32.9697, -96.80322, 29.46786, -98.53506, "N") + " Nautical Miles\n");
     }
 

@@ -87,12 +87,13 @@ public class LinhaService {
 
     public LinhaForm read(LinhaForm linhaForm) {
         LinhaForm linhaDTO = new LinhaForm();
+        List<CoordinateForm> listCoordinateForm = new ArrayList<>();
         Linha linha = linhaDAO.findById(linhaForm.getId()).orElse(null);
         if (linha != null) {
             linhaDTO.setId(linha.getId());
             linhaDTO.setNome(linha.getNome());
             linhaDTO.setCodigo(linha.getCodigo());
-            List<CoordinateForm> listCoordinateForm = new ArrayList<>();
+
             for (Coordinate c : linha.getListCoordinate()) {
                 CoordinateForm form = new CoordinateForm();
                 form.setLat(c.getLat());
@@ -108,7 +109,6 @@ public class LinhaService {
 
 
     public Linha createLinha(LinhaForm linhaForm) {
-        //se existir linha nao deixa cadastrar
         Linha linha = null;
         List<Linha> linhaMesmoNome = linhaDAO.findName(linhaForm.getNome());
 
