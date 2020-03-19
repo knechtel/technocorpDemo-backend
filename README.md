@@ -5,7 +5,7 @@ documentacao
 http://localhost:8080/swagger-ui.html#/
 Toda a implementação esta em linhaController.
 
-Existe uma unica funcionalidade no IntinerarioController que é para buscar da API todos o intinerario de cada linha.
+Existe uma unica funcionalidade no IntinerarioController que é para buscar da API todos o intinerarios de cada linha, para isso é necessário estar no DB local todas as linhas.
 
     /*
     * chamar primeiro /api/linha/lista
