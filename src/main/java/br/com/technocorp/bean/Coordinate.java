@@ -11,7 +11,7 @@ public class Coordinate {
     private String lat;
     private String lng;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne()
     @JoinColumn(name = "id_linha", foreignKey = @ForeignKey(name = "id"))
     private Linha linha;
 

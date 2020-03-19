@@ -78,23 +78,22 @@ public class LinhaService {
             e.printStackTrace();
         }
 
-    List<LinhaFormView>linhaFormView =new ArrayList<>();
-     for(Linha l:linhaDAO.findAll()){
-        linhaFormView.add(l.build(l));
-     }
-     return linhaFormView;
+        List<LinhaFormView> linhaFormView = new ArrayList<>();
+        for (Linha l : linhaDAO.findAll()) {
+            linhaFormView.add(l.build(l));
+        }
+        return linhaFormView;
     }
 
     public LinhaForm read(LinhaForm linhaForm) {
         LinhaForm linhaDTO = new LinhaForm();
         Linha linha = linhaDAO.findById(linhaForm.getId()).orElse(null);
-        if(linha!=null)
-        {
+        if (linha != null) {
             linhaDTO.setId(linha.getId());
             linhaDTO.setNome(linha.getNome());
             linhaDTO.setCodigo(linha.getCodigo());
-            List<CoordinateForm>listCoordinateForm = new ArrayList<>();
-            for(Coordinate c:linha.getListCoordinate()){
+            List<CoordinateForm> listCoordinateForm = new ArrayList<>();
+            for (Coordinate c : linha.getListCoordinate()) {
                 CoordinateForm form = new CoordinateForm();
                 form.setLat(c.getLat());
                 form.setLng(c.getLng());
@@ -138,8 +137,18 @@ public class LinhaService {
 
     }
 
-    public Linha update(Linha linha) {
-        return linhaDAO.save(linha);
+    public void update(Linha linhaForm) {
+        Linha linhaAux = linhaDAO.findById(linhaForm.getId()).orElse(null);
+        for (Coordinate c1 : linhaAux.getListCoordinate()) {
+            if (coordinateDAO.findById(c1.getId()) != null)
+                coordinateDAO.deleteById(c1.getId());
+        }
+        linhaAux.setListCoordinate(linhaForm.getListCoordinate());
+        for (Coordinate c : linhaAux.getListCoordinate()) {
+            c.setLinha(linhaAux);
+            coordinateDAO.save(c);
+        }
+        linhaDAO.save(linhaAux);
     }
 
 
@@ -161,7 +170,7 @@ public class LinhaService {
         List<LinhaFormView> listLinha = new ArrayList();
         for (Coordinate c :
                 coordinateDAO.findAll()) {
-            if(c.getLng()!=null&&c.getLng()!=null) {
+            if (c.getLng() != null && c.getLng() != null) {
                 if (DistanceCalculator.distance(new Double(c.getLat()), new Double(c.getLng()), lat, lng, "K")
                         <= raioKm) {
 

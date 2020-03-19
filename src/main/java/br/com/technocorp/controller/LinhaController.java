@@ -60,11 +60,11 @@ public class LinhaController {
 
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public Linha update(@RequestBody LinhaForm linhaForm) {
+    public  ResponseEntity update(@RequestBody LinhaForm linhaForm) {
         Linha linha = linhaForm.build();
         linha.setListCoordinate(linhaForm.buildList());
         linhaService.update(linha);
-        return linha;
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @RequestMapping(value = "/findByName", method = RequestMethod.POST)

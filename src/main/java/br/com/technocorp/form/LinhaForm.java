@@ -64,6 +64,7 @@ public class LinhaForm {
                 coordinate.setLng(c.getLng());
                 coordinate.setLat(c.getLat());
                 list.add(coordinate);
+             //   coordinate.setLinha(linha);
             }
         }
         return list;

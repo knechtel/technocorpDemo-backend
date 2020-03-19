@@ -24,6 +24,8 @@ public interface CoordinateDAO extends CrudRepository<Coordinate, Integer> {
     @Query("Select c from Coordinate c  WHERE c.linha.idLinha = :id and c.lat =:lat and c.lng =:lng")
     public List<Coordinate> findByLatAndLgnAndIdLinha(@Param("id")Integer id ,@Param("lat")String lat,@Param("lng")String lng);
 
+
+
 //    @Query(value = " delete from Coordinate c join fetch c.linha where coordinate.linha.id in (select c.linha.id from Coordinate c  " +
 //            " join fetch c.linha where c.linha.id =  :id_Linha)")
 //    public void deleteByLinha(@Param("id_Linha") Integer id_Linha);
