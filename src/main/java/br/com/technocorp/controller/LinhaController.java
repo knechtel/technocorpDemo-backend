@@ -55,7 +55,7 @@ public class LinhaController {
 
     @RequestMapping(value = "lista", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<LinhaFormView> findAll() {
-        return linhaService.findAllWeb();
+        return linhaService.findAllWebAndAllBd();
     }
 
 

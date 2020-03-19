@@ -15,9 +15,10 @@ public class IntinerarioController {
     @Autowired
     private IntinerarioService intinerarioService;
 
-
-
-
+    /*
+    * chamar primeiro /api/linha/lista
+    * este metodo busca todos itinerário na Web
+    * */
     @RequestMapping(value = "getAll", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity gettAllIntinerario(){

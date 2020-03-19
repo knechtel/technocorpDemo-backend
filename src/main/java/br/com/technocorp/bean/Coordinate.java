@@ -1,6 +1,7 @@
 package br.com.technocorp.bean;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class Coordinate {
@@ -54,5 +55,21 @@ public class Coordinate {
         c.setId(id);
 
         return c;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Coordinate that = (Coordinate) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(lat, that.lat) &&
+                Objects.equals(lng, that.lng) &&
+                Objects.equals(linha, that.linha);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, lat, lng, linha);
     }
 }

@@ -8,15 +8,10 @@ import br.com.technocorp.bean.Linha;
 import br.com.technocorp.dao.CoordinateDAO;
 import br.com.technocorp.dao.LinhaDAO;
 import br.com.technocorp.form.CoordinateForm;
-import br.com.technocorp.form.IntinerarioForm;
 import br.com.technocorp.form.LinhaForm;
 import br.com.technocorp.form.LinhaFormView;
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.reflect.TypeToken;
 import okhttp3.ResponseBody;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import retrofit2.Response;
@@ -25,14 +20,10 @@ import util.ApiIntinerario;
 import util.DistanceCalculator;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 @Service
 public class LinhaService {
@@ -43,7 +34,7 @@ public class LinhaService {
     private CoordinateDAO coordinateDAO;
 
 
-    public List<LinhaFormView> findAllWeb() {
+    public List<LinhaFormView> findAllWebAndAllBd() {
         try {
 
             Retrofit retrofit = new Retrofit.Builder()
@@ -116,10 +107,16 @@ public class LinhaService {
             return null;
         } else {
             linha = linhaDAO.save(linhaForm.build());
-            for (Coordinate c :
-                    linhaForm.buildList()) {
+            for (Coordinate c : linhaForm.buildList()) {
                 c.setLinha(linha);
-                coordinateDAO.save(c);
+
+                if (!isInDB(linhaForm.buildList())) {
+                    //OKAY code(200)
+                    coordinateDAO.save(c);
+                }else {
+                    //conflito
+                    return null;
+                }
             }
             linha.setListCoordinate(linhaForm.buildList());
 
@@ -195,5 +192,32 @@ public class LinhaService {
             listForm.add(lfv);
         }
         return listForm;
+    }
+
+    public boolean isInDB(List<Coordinate> listCoordinate) {
+        for (Linha l : linhaDAO.findAll()) {
+
+            Linha linhaAux = linhaDAO.findAllCoordenada(l.getId());
+
+            if (linhaAux != null && linhaAux.getListCoordinate() != null) {
+                List<Coordinate> listAux = linhaAux.getListCoordinate();
+                Integer cntCoordinate = 0;
+                if (listAux != null) {
+                    if (listAux.size() == listCoordinate.size()) {
+                        for (Coordinate c : listAux
+                        ) {
+                            if (listAux.contains(c)) {
+                                cntCoordinate++;
+                            }
+                        }
+                    }
+                    //todas as coordenadas sao iguais
+                    if (cntCoordinate == listCoordinate.size()) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }

@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.io.Reader;
 
 public class Test {
-
+//http://localhost:8080/swagger-ui.html#/
     public static void main(String[] args) {
         ResteasyClient client = new ResteasyClientBuilder().build();
         ResteasyWebTarget target = client.target("http://www.poatransporte.com.br/php/facades/process.php?a=nc&p=%&t=o");

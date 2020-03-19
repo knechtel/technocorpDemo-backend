@@ -35,5 +35,7 @@ public interface LinhaDAO extends CrudRepository<Linha, Integer> {
     @Query("Select i from Linha i ")
     public List<Linha> findAllLinha();
 
+    @Query("Select i from Linha i join fetch i.listCoordinate where i.id=:id")
+    public Linha findAllCoordenada(@Param("id")Integer id );
 
 }

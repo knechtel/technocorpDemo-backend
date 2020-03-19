@@ -4,9 +4,7 @@ import br.com.technocorp.bean.Coordinate;
 import br.com.technocorp.bean.Linha;
 import br.com.technocorp.dao.CoordinateDAO;
 import br.com.technocorp.dao.LinhaDAO;
-import br.com.technocorp.form.CoordinateForm;
 import br.com.technocorp.form.IntinerarioCoordinateForm;
-import br.com.technocorp.form.IntinerarioForm;
 import com.google.gson.JsonElement;
 import okhttp3.ResponseBody;
 import org.json.simple.JSONObject;
@@ -76,6 +74,7 @@ public class IntinerarioService {
 
 
                             if (c.getLat() != null && c.getLng() != null) {
+
                                 if (coordinateDAO.findByLatAndLgnAndIdLinha(c.getLinha().getIdLinha(),
                                         c.getLat(), c.getLng()).size() == 0) {
                                     coordinateDAO.save(c);
@@ -155,38 +154,9 @@ public class IntinerarioService {
     }
 
 
-    public void create(IntinerarioForm intinerarioForm) {
-        Linha linha = new Linha();
-        linha.setNome(intinerarioForm.getNome());
-        linha.setCodigo(intinerarioForm.getCodigo());
-        linha = linhaDAO.save(linha);
-        List<CoordinateForm> listCoordinate = intinerarioForm.getListCoordinate();
 
-        for (CoordinateForm c : listCoordinate
-        ) {
-            Coordinate coordinate = c.build();
-            coordinate.setLinha(linha);
-            coordinateDAO.save(coordinate);
-        }
-    }
 
-    //rever isso
-//    public void delete(IntinerarioForm intinerarioForm) {
-//
-//        List<Coordinate> list = coordinateDAO.findByIDW(intinerarioForm.getIdLinha());
-//
-//        if (list != null) {
-//            for (Coordinate c : list) {
-//                coordinateDAO.delete(c);
-//            }
-//        }
-//
-//        Linha linha = linhaDAO.findById(intinerarioForm.getIdMysql()).orElse(null);
-//        if (linha != null) {
-//            linhaDAO.delete(linha);
-//        }
-//
-//    }
+
 
     public List<Coordinate> findAllIntinerario(IntinerarioCoordinateForm form) {
         List<Coordinate> listCoordinate = new ArrayList<>();
